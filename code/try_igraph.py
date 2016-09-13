@@ -15,14 +15,21 @@ import logging
 
 def try_igraph():
     time0=time.time()
-    graph = load_graph("redis_dist.txt")
-    g = Graph()
-    g.add_vertices(graph.nodes())
-    g.add_edges(graph.edges())
+    graph = load_graph("redis_dist.txt",is_weight=True)
+    #g = Graph()
+    #g.add_vertices(graph.nodes())
+    #g.add_edges(graph.edges())
+    read_list = []
+    for n,nbrs in graph.adjacency_iter():#把network的graph按 source,target,weight存起来
+        for nbr,eattr in nbrs.items():
+            read_list.append([n,nbr,eattr['weight']])
+
+    g = Graph.TupleList(read_list,weights=True)
     print 'generate graph:',time.time()-time0
     logging.info("generate graph spend %s seconds" % str(time.time()-time0))
     #use igraph methods
-    methods = ['spinglass','multilevel','fastgreedy','walktrap','edge_betweenness'] #multilevel没有子类？没有clusters  'spinglass'----太慢了   'multilevel',也不能用这个
+    #methods = ['multilevel','fastgreedy','walktrap','spinglass','edge_betweenness']
+    methods = ['multilevel'] #multilevel没有子类？没有clusters  'spinglass'----太慢了   'multilevel',也不能用这个
     for i in methods:
         igraph_cls = clustering(g,i)
         t3 = time.time()
@@ -61,6 +68,7 @@ def try_igraph():
         #     print " ".join(str(idx) for idx in cluster)
         #plot(g,'big.png')
         #clustering(g)
+    logging.info('===================end=====================')
 
 def clustering(graph,i):
  
@@ -69,16 +77,27 @@ def clustering(graph,i):
     print "\n# "+i+" Clustering:"
     logging.info("%s Clustering: " % i)
     t0 = time.time()
-    method = eval('graph.community_'+i+'()')
-    dendrogram = method
-    try:
-        clusters = dendrogram.as_clustering()
-        print "---"+i+" Clustering found %s clusters ---" % len(clusters)
-        logging.info("---%s Clustering found %s clusters ---" % (i, len(clusters)))
-    except:
-        clusters = dendrogram
-        print "---"+i+" Clustering found %s clusters ---" % len(clusters)
-        logging.info("---%s Clustering found %s clusters ---" % (i, len(clusters)))
+    method = eval('graph.community_'+i+'(weights="weight",return_levels=True)') #,return_levels=True
+    dendrograms = method
+    #dendrogram = method
+    #logging.info("return_levels=True:" % dendrogram)
+    #为了multilevel显示迭代次数
+    for i in range(len(dendrograms)):
+        logging.info("---the %s Iters ---" % i)
+        clusters = dendrograms[i]
+        print "--- Clustering found %s clusters ---" % len(clusters)
+        logging.info("--- Clustering found %s clusters ---" %  len(clusters))
+        for j in range(len(clusters)):
+            logging.info("%s clusters members: %s" % (j,clusters[j]))
+        logging.info("modularity: %s" % clusters.modularity)
+    
+    # try:
+    #     clusters = dendrogram.as_clustering()
+    # except:
+    #     clusters = dendrogram
+    # print "---"+i+" Clustering found %s clusters ---" % len(clusters)
+    # logging.info("---%s Clustering found %s clusters ---" % (i, len(clusters)))
+    
         # try:
         #     fix_dendrogram(graph, dendrogram)
         #     clusters = dendrogram.as_clustering()
@@ -86,13 +105,13 @@ def clustering(graph,i):
         #     logging.info("---%s Clustering found %s clusters ---" % (i, len(clusters)))
         # except:
         #     pass
-    try:
-        print clusters.modularity
-        for i in range(len(clusters)):
-            logging.info("%s clusters members: %s" % (i,clusters[i]))
-        logging.info("modularity: %s" % clusters.modularity)
-    except:
-        clusters = []
+    # try:
+    #     print clusters.modularity
+    #     for i in range(len(clusters)):
+    #         logging.info("%s clusters members: %s" % (i,clusters[i]))
+    #     logging.info("modularity: %s" % clusters.modularity)
+    # except:
+    #     clusters = []
     t1 = time.time() - t0
     print 'time spend:'+ str(t1)
     logging.info("time spend : %s" % str(t1))

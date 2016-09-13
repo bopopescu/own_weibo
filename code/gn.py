@@ -9,7 +9,7 @@ import logging
 
 logging.basicConfig(level=logging.INFO,filename='./log/mcl.log',format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',  
                     datefmt='%a, %d %b %Y %H:%M:%S', filemode='a')
-def load_graph(f, skip_rows=0):
+def load_graph(f, skip_rows=0,is_weight=False):
     g = nx.Graph()
     with open(f) as fo:
         lines = fo.readlines()[skip_rows:]
@@ -18,12 +18,16 @@ def load_graph(f, skip_rows=0):
             a = line.strip('\n').split(' ')
             nodex = a[0]
             nodey = a[1]
-            #weight = float(a[4])+float(a[5])+float(a[6])*0.001
+            if is_weight == True:
+                #weight = a[2]
+                weight = (float(a[4])+float(a[5])+float(a[6])*0.001)*1000
+            else:
+                weight = 1
             #print nodex,nodey,weight
         except ValueError:
             continue
-        g.add_edge(nodex, nodey,)
-        #g.add_edge(nodex, nodey, weight=float(weight))
+        g.add_edge(nodex, nodey, weight=float(weight))
+
 
     return g
 
