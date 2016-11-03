@@ -20,7 +20,16 @@ def write(con):
         f_w.write(i+'\r\n')
     f_w.close()
 
-con = []
-con = cut()
-write(con)
+def look_cora():
+    with open('./cora.content','r') as f:
+        lines = f.readlines()
+        for line in lines:
+            a = line.split('\t')[-2:]
+            if a[0] != '0' and a[0] != '1':
+                print a
 
+if __name__ == '__main__':
+    # con = []
+    # con = cut()
+    # write(con)
+    look_cora()

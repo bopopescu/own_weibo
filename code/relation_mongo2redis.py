@@ -11,6 +11,7 @@ from sklearn import preprocessing
 from scipy import sparse  #稀疏矩阵
 
 
+
 MONGODB_HOST = '219.224.134.222' #'localhost'
 MONGODB_PORT = 27017
 conn = MongoClient(host=MONGODB_HOST, port=MONGODB_PORT)
@@ -152,8 +153,8 @@ def read_dist(): #并没有use_dist()建个空矩阵再存值的快
 
 #input:邻接矩阵、每类的点的索引
 def cal_modularity(m,clusters):
-	# print type(m),type(clusters)
-	# print 'clusters:',clusters
+	#print type(clusters),len(clusters)
+	#print 'clusters:',clusters
 	Q = 0
 	m = np.array(m)
 	degree = np.sum(m,axis=0)

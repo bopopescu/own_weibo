@@ -11,10 +11,10 @@ import logging
 import time
 import community
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',  
-                    datefmt='%a, %d %b %Y %H:%M:%S',filename='relation.log',filemode='w')
+                    datefmt='%a, %d %b %Y %H:%M:%S',filename='log/text.log',filemode='a')
 logger = logging.getLogger(__name__)
 logger.info('Start....')
-hdlr = logging.FileHandler('relation.log')
+hdlr = logging.FileHandler('log/text.log.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 logger.addHandler(hdlr)
 logger.setLevel(logging.NOTSET)
@@ -49,6 +49,12 @@ def allinfo(): #好友数/关注数的比例
         ratio.append(ra)
         #print uid,ra
         r.hset('ratio',uid,ra)
+
+def find_text(MONGOD_COLLECTION,uid):
+	collection = db[MONGOD_COLLECTION]
+	a = collection.find({'uid':uid}).limit(200)
+	return a
+
 
 def info_count():
 	a = collection.find()
@@ -185,14 +191,17 @@ def graph():
 	G1 = G1.to_undirected()
 	print G1.size(),G1.number_of_nodes()
 	draw_partition(G1)
-	for k in xrange(3,6):
+	kclique(G1)
+
+def kclique(g):
+	for k in xrange(2,3):
 		print '**********k值：%d*************' % k
 		start_time = time.clock()
-		rst_com = find_community(G1,k)
+		rst_com = find_community(g,k)
 		end_time = time.clock()
 		print '计算耗时（秒）：%.3f' % (end_time-start_time)
 		print '生成社区数：%d' % len(rst_com)
-
+		print rst_com
 	#G2un = G2.to_undirected()
 	#print nx.average_clustering(G1)
 	#print nx.transitivity(G1)
