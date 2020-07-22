@@ -621,7 +621,7 @@ db.getCollenctionNames() 取得所有数据集合的名称列表
 db.getLastError() 返回最后一个错误的提示消息
 db.getLastErrorObj() 返回最后一个错误的对象
 db.getMongo() 取得当前服务器的连接对象get the server connection object
-db.getMondo().setSlaveOk() allow this connection to read from then nonmaster membr of a replica pair
+db.getMondo().setSubordinateOk() allow this connection to read from then nonmain membr of a replica pair
 db.getName() 返回当操作数据库的名称
 db.getPrevError() 返回上一个错误对象
 db.getProfilingLevel() ?什么等级
@@ -630,7 +630,7 @@ db.getSisterDB(name) get the db at the same server as this onew
 db.killOp() 停止（杀死）在当前库的当前操作
 db.printCollectionStats() 返回当前库的数据集状态
 db.printReplicationInfo()
-db.printSlaveReplicationInfo()
+db.printSubordinateReplicationInfo()
 db.printShardingStatus() 返回当前数据库是否为共享数据库
 db.removeUser(username) 删除用户
 db.repairDatabase() 修复当前数据库
@@ -1548,15 +1548,15 @@ Switched to branch 'dev'
 删除分支：
 $ git branch -d feature-vulcan
 
-pull jln master是把jln master拉取下来，然后当前分支和它合并 
+pull jln main是把jln main拉取下来，然后当前分支和它合并 
 push的时候假如远程分支和当前分支有不同的修改的话是push不了的，pull了之后就把远程分支和当前分支合并了
 
-jln master和origin master是不同地方的两个分支
-git pull origin master只拉取了origin master这个分支的修改，不能保证没有和jln master存在不同的修改
+jln main和origin main是不同地方的两个分支
+git pull origin main只拉取了origin main这个分支的修改，不能保证没有和jln main存在不同的修改
 
-现在和origin master木有关系了
-push到远程分支的时候，假如远程分支有本地分支上没有的修改(比如别人把他的代码push到那个远程分支了)，是不能push的。在push jln master之前要pull jln master一下，就是这个原因。之前可能是因为jln master上没有本地分支上没有的修改，所以没有pull也能push
-至于要不要pull origin master，就看你自己想不想和origin master这个远程分支保持同步了
+现在和origin main木有关系了
+push到远程分支的时候，假如远程分支有本地分支上没有的修改(比如别人把他的代码push到那个远程分支了)，是不能push的。在push jln main之前要pull jln main一下，就是这个原因。之前可能是因为jln main上没有本地分支上没有的修改，所以没有pull也能push
+至于要不要pull origin main，就看你自己想不想和origin main这个远程分支保持同步了
 
 git remote -v
 git remote rm origin
@@ -1675,7 +1675,7 @@ $ ssh-keygen -t rsa -C "youremail@example.com"
 在github上新建一个仓库
 在本地可以修改修改commit
 在本地git remote add origin https://github.com/jianjian0dandan/info_consume.git
-第一次提交的时候git push -u origin master
+第一次提交的时候git push -u origin main
 
 
 如下，我把src里的全部移除，但是本地文件还保留。
@@ -1771,13 +1771,13 @@ show variables like '%time%';看有哪些
 /etc/crontab文件    定时任务
 
 错误：
- ! [remote rejected] master -> master (pre-receive hook declined)
+ ! [remote rejected] main -> main (pre-receive hook declined)
 error: failed to push some refs to 'https://github.com/jianjian0dandan/own_weibo.git'
 原因；
 可能是因为有超大文件搞的。。然后又没删掉，走投无路，把git文件删了，重新init了一个。。。然后只上传一个文件，可以了
 
 错误：
-fatal: Couldn't find remote ref master'
+fatal: Couldn't find remote ref main'
 解决：
 git remote rm origin 
 
@@ -1833,13 +1833,13 @@ csc，csr,分别是按照列和行对数据进行存储的
 github有冲突：
 Step 1: From your project repository, check out a new branch and test the changes.
 
-git checkout -b Gloriajuice-master master
-git pull https://github.com/Gloriajuice/info_consume.git master
+git checkout -b Gloriajuice-main main
+git pull https://github.com/Gloriajuice/info_consume.git main
 Step 2: Merge the changes and update on GitHub.
 
-git checkout master
-git merge --no-ff Gloriajuice-master
-git push origin master
+git checkout main
+git merge --no-ff Gloriajuice-main
+git push origin main
 
 
 igraph  
